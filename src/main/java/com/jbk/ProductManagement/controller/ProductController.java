@@ -62,6 +62,7 @@ public class ProductController {
 	}
 	}
 	
-	//@GetMapping
+	//@GetMapping(value = "/deleteProductById")
+	
 
 }
