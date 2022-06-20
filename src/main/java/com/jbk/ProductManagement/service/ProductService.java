@@ -9,7 +9,7 @@ public interface ProductService {
 	public Boolean saveProduct(Product product);
 	public Product getProductById(int productId);
 	public List<Product> getAllProduct();
-	public Boolean deleteProductByProductId(String productId);
+	public Boolean deleteProductByProductId(int productId);
 	public Boolean updateProduct(Product product);
 
 }

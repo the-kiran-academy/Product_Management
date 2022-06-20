@@ -34,13 +34,15 @@ public class ProductService_impl implements ProductService {
 	}
 
 	@Override
-	public Boolean deleteProductByProductId(String productId) {
-		return null;
+	public Boolean deleteProductByProductId(int productId) {
+		boolean b = dao.deleteProductByProductId(productId);
+		return b;
 	}
 
 	@Override
 	public Boolean updateProduct(Product product) {
-		return null;
+		Boolean b = dao.updateProduct(product);
+		return b;
 	}
 
 }

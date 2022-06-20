@@ -2,10 +2,14 @@ package com.jbk.ProductManagement.dao;
 
 import java.util.List;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.Restrictions;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -23,11 +27,17 @@ public class ProductDao_impl implements ProductDao {
 		try {
 			Session session = sessionFactory.openSession();
 			Transaction transaction = session.beginTransaction();
-			session.save(product);
-			transaction.commit();
-			b = true;
+			Criteria criteria = session.createCriteria(Product.class);
+			criteria.add(Restrictions.eq("productName", product.getProductName()));
+			Product prd = (Product) criteria.uniqueResult();
+			if (prd == null) {
+				session.save(product);
+				transaction.commit();
+				b = true;
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
+
 		}
 		return b;
 	}
@@ -47,31 +57,65 @@ public class ProductDao_impl implements ProductDao {
 	@Override
 	public List<Product> getAllProduct() {
 		List<Product> products = null;
-		Session session=null;
+		Session session = null;
 		try {
 			session = sessionFactory.openSession();
 			Criteria criteria = session.createCriteria(Product.class);
 			products = criteria.list();// FROM Product
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
-		finally {
+		} finally {
 			session.close();
 		}
 		return products;
 	}
-	
 
 	@Override
-	public Boolean deleteProductByProductId(String productId) {
-		// TODO Auto-generated method stub
-		return null;
+	public Boolean deleteProductByProductId(int productId) {
+		Session session = null;
+		Boolean b = false;
+
+		try {
+			session = sessionFactory.openSession();
+			Product product = session.load(Product.class, productId);
+
+			if (product != null) {
+				Transaction transaction = session.beginTransaction();
+				session.delete(product);
+				transaction.commit();
+				b = true;
+			}
+
+		} catch (EntityNotFoundException e) {
+			b = false;
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+
+		return b;
 	}
 
 	@Override
 	public Boolean updateProduct(Product product) {
-		// TODO Auto-generated method stub
-		return null;
+		Session session = null;
+		Boolean b = false;
+		try {
+			session = sessionFactory.openSession();
+			Product prd = getProductById(product.getProductId());
+			if (prd != null) {
+				Transaction transaction = session.beginTransaction();
+				session.update(product);
+				transaction.commit();
+				b = true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+		return b;
 	}
 
 }

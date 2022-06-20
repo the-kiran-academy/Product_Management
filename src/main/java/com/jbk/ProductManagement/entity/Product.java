@@ -6,6 +6,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+
+import com.sun.istack.NotNull;
 
 @Entity
 @Table(name = "product")
@@ -15,11 +18,14 @@ public class Product {
 	@Column(nullable = false)
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int productId;
+	
 	@Column(unique = true)
+	@NotBlank(message = "Name is mandatory")
 	private String productName;
 	private int supplierId;
 	private String quantityPerUnit;
 	private long productPrice;
+	
 	private int productInStock;
 	
 	public Product() {
